@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.sas.esp</groupId>
+  <artifactId>camel-esp</artifactId>
+  <packaging>jar</packaging>
+  <version>2.2</version>
+
+  <name>Camel dfESP Component</name>
+  <description>Endpoint for reading data from and writing data to SAS ESP with Apache Camel</description>
+  <url>http://www.sas.com</url>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+	<maven.build.timestamp.format>yyyyMMdd-HHmmss</maven.build.timestamp.format>
+	
+	<camel-version>2.15.2</camel-version>
+	<esp-version>[2.3, )</esp-version>	
+	
+	<logback-version>1.1.2</logback-version>
+	<slf4j-version>1.7.12</slf4j-version>
+
+	<java-src-version>1.8</java-src-version>
+	<java-tgt-version>1.8</java-tgt-version>	
+	
+	<maven-compiler-version>3.2</maven-compiler-version>
+	<maven-resources-version>2.7</maven-resources-version>
+	<maven-bundle-version>2.5.3</maven-bundle-version>
+	
+    <camel-osgi-export-package>com.sas.esp.custom.camel.component.spi.*,com.sas.esp.custom.camel.component.impl.*</camel-osgi-export-package>
+    <camel-osgi-export-service>org.apache.camel.spi.ComponentResolver;component=dfESP</camel-osgi-export-service>
+
+  </properties>
+
+  <dependencies>
+
+    <!-- Camel Core -->
+	<dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-core</artifactId>
+      <version>${camel-version}</version>
+    </dependency>
+
+    <!-- SAS ESP API -->
+    <dependency>
+      <groupId>com.sas.esp</groupId>
+      <artifactId>dfx-esp-api</artifactId>
+      <version>${esp-version}</version>
+    </dependency>
+	
+    <!-- Logging with SLF4J and LogBack -->
+	<dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>${slf4j-version}</version>
+    </dependency>
+	<dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>jul-to-slf4j</artifactId>
+      <version>${slf4j-version}</version>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-classic</artifactId>
+      <version>${logback-version}</version>
+	  <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>ch.qos.logback</groupId>
+      <artifactId>logback-core</artifactId>
+      <version>${logback-version}</version>
+	  <scope>test</scope>
+    </dependency>
+
+    <!-- Testing -->
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-test</artifactId>
+      <version>${camel-version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <defaultGoal>install</defaultGoal>
+
+    <plugins>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven-compiler-version}</version>
+        <configuration>
+          <source>${java-src-version}</source>
+          <target>${java-tgt-version}</target>
+        </configuration>
+      </plugin>
+      
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>${maven-resources-version}</version>
+        <configuration>
+          <encoding>UTF-8</encoding>
+        </configuration>
+      </plugin>
+
+      <!-- to generate the MANIFEST-FILE of the bundle -->
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <version>${maven-bundle-version}</version>
+        <extensions>true</extensions>
+        <configuration>
+          <instructions>
+            <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+            <Export-Service>${camel-osgi-export-service}</Export-Service>
+			<Export-Package>${camel-osgi-export-package}</Export-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.camel</groupId>
+        <artifactId>camel-package-maven-plugin</artifactId>
+        <version>${camel-version}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>generate-components-list</goal>
+            </goals>
+            <phase>generate-resources</phase>
+          </execution>
+        </executions>
+      </plugin>      
+
+    </plugins>
+  </build>
+
+</project>
